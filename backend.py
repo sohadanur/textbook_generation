@@ -8,6 +8,7 @@ import logging
 from fpdf import FPDF
 import tempfile
 import tiktoken
+import base64
 
 # Load environment variables
 load_dotenv()
@@ -40,14 +41,34 @@ class TextbookInput(BaseModel):
 def count_tokens(text: str) -> int:
     return len(tokenizer.encode(text))
 
-def generate_pdf(content: str, filename: str):
+# In generate_pdf function (backend.py), replace with:
+def generate_pdf(content: str, filename: str) -> str:
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt=content)
+    
+    # Clean content of problematic characters
+    cleaned_content = content.encode('latin-1', 'replace').decode('latin-1')
+    
+    pdf.multi_cell(0, 10, txt=cleaned_content)
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
     pdf.output(temp_file.name)
-    return temp_file.name
+    with open(temp_file.name, "rb") as f:
+        pdf_bytes = f.read()
+    os.unlink(temp_file.name)
+    return base64.b64encode(pdf_bytes).decode('utf-8')
+
+# def generate_pdf(content: str, filename: str) -> str:
+#     pdf = FPDF()
+#     pdf.add_page()
+#     pdf.set_font("Arial", size=12)
+#     pdf.multi_cell(0, 10, txt=content)
+#     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+#     pdf.output(temp_file.name)
+#     with open(temp_file.name, "rb") as f:
+#         pdf_bytes = f.read()
+#     os.unlink(temp_file.name)
+#     return base64.b64encode(pdf_bytes).decode('utf-8')
 
 def generate_chunked_prompt(input: TextbookInput, current_content: str = "", current_count: int = 0) -> tuple[str, int]:
     remaining_words = input.word_count - current_count
@@ -113,12 +134,7 @@ async def generate_textbook(input: TextbookInput, request: Request):
             raise HTTPException(status_code=400, detail=f"Failed to reach target word count. Requested: {input.word_count}, Actual: {final_word_count}")
 
         # Generate PDF
-        pdf_path = generate_pdf(textbook_content, f"{input.subject.replace(' ', '_')}.pdf")
-        
-        with open(pdf_path, "rb") as f:
-            pdf_content = f.read()
-        
-        os.unlink(pdf_path)
+        pdf_content = generate_pdf(textbook_content, f"{input.subject.replace(' ', '_')}.pdf")
 
         return {
             "textbook_content": textbook_content,
