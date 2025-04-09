@@ -1,6 +1,9 @@
 fastapi
-uvicorn
+pydantic
 streamlit
 python-dotenv
 requests
 mistralai
+fpdf2
+tiktoken
+uvicorn
