@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime
+import base64
 
 # Page Configuration
 st.set_page_config(
@@ -35,7 +36,7 @@ with st.form("textbook_form", border=True):
     
     with col1:
         subject = st.text_input("Subject Title*", 
-                              placeholder="Biography of Jabil, King of Agra",
+                              placeholder="Enter the subject of your textbook",
                               help="The main subject of your textbook")
         
         grade = st.selectbox("Target Grade Level*", 
@@ -44,7 +45,7 @@ with st.form("textbook_form", border=True):
     
     with col2:
         region = st.text_input("Region/Culture*", 
-                             placeholder="Agra, India",
+                             placeholder="Enter geographical/cultural context",
                              help="Geographical/cultural context")
         
         # Word count input with better visibility
@@ -62,7 +63,7 @@ with st.form("textbook_form", border=True):
     # Chapters and sections
     chapters = st.text_area(
         "Chapter Titles (comma separated)*",
-        value="Introduction, Childhood, Teenage Years, Business Growth, Marriage and Tragedy",
+        placeholder="Enter chapter titles separated by commas",
         height=100
     )
     
@@ -78,11 +79,7 @@ with st.form("textbook_form", border=True):
     prompt = st.text_area(
         "Content Instructions*",
         height=200,
-        value="""1. Introduce Jabil as the king of Agra, include direct quotes
-2. Detail all important life events chronologically
-3. Analyze business decisions and their impacts
-4. Cover personal life with sensitivity
-5. Make descriptions long and elaborate"""
+        placeholder="Enter detailed instructions for content generation"
     )
     
     # Form submit with clear validation
@@ -129,10 +126,11 @@ if submitted:
                         with st.expander("Preview Textbook Content"):
                             st.markdown(result["textbook_content"][:2000] + "...")
                         
-                        # PDF download button - always visible
+                        # PDF download button
+                        pdf_bytes = base64.b64decode(result["pdf"])
                         st.download_button(
                             label=f"📥 Download Full Textbook ({actual_words:,} words)",
-                            data=result["pdf"],
+                            data=pdf_bytes,
                             file_name=f"{subject.replace(' ', '_')}.pdf",
                             mime="application/pdf",
                             key="download_pdf",
