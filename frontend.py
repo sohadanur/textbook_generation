@@ -25,7 +25,7 @@ st.markdown("""
 
 # Header
 st.title("📘 Textbook Generator Pro")
-st.markdown("Generate professional textbooks with precise word counts")
+st.markdown("Generate professional textbooks for students")
 
 # Main Form
 with st.form("textbook_form", border=True):
@@ -154,76 +154,4 @@ if submitted:
 
 # Footer
 st.divider()
-st.caption("Textbook Generator Pro v2.0 | Word count guaranteed ±10%")
-
-
-# import streamlit as st
-# import requests
-
-# # Page configuration
-# st.set_page_config(
-#     page_title="Textbook Generator",
-#     page_icon="📚",
-#     layout="centered",
-# )
-
-# # Page Title
-# st.title("📚 Textbook Generator", anchor=False)
-
-# # Page Description
-# st.markdown("""
-# Welcome to the Textbook Generator!  
-# This tool allows you to create custom textbooks for any subject, grade, and region.  
-# Simply fill in the details below and click **Generate Textbook** to create desired textbooks.
-# """)
-
-# # Input Form
-# with st.form("textbook_form"):
-#     st.subheader("Textbook Details", anchor=False)
-
-#     # Input fields
-#     subject = st.text_input("Subject (e.g., Math, Science, Literature, Biology, Physics, Chemistry)", placeholder="Math")
-#     grade = st.number_input("Grade (1 to 12)", min_value=1, max_value=12, step=1)
-#     region = st.text_input("Region (e.g., USA, India, Europe)", placeholder="USA")
-#     chapters = st.text_area("Chapter Names (comma-separated)", placeholder="Chapter 1: Algebra, Chapter 2: Geometry")
-#     sections_per_chapter = st.number_input("Sections per Chapter", min_value=1, max_value=10, step=1)
-#     prompt = st.text_area("Prompt (brief description of the chapters)", placeholder="Generate a textbook covering basic algebra and geometry concepts.")
-#     pages = st.number_input("Total Pages (5 to 100)", min_value=5, max_value=100, step=1)  # Updated page range
-
-#     # Submit button
-#     submitted = st.form_submit_button("Generate Textbook")
-
-# # Handle form submission
-# if submitted:
-#     # Validate inputs
-#     if not subject or not region or not chapters or not prompt:
-#         st.error("Please fill in all required fields.")
-#     else:
-#         # Prepare data for the API request
-#         chapters_list = [chapter.strip() for chapter in chapters.split(",")]
-#         data = {
-#             "subject": subject,
-#             "grade": grade,
-#             "region": region,
-#             "chapters": chapters_list,
-#             "sections_per_chapter": sections_per_chapter,
-#             "prompt": prompt,
-#             "pages": pages,
-#         }
-
-#         # Call the FastAPI backend
-#         with st.spinner("Generating textbook content..."):
-#             try:
-#                 response = requests.post("http://localhost:8000/generate-textbook", json=data)
-#                 if response.status_code == 200:
-#                     textbook_content = response.json().get("textbook_content")
-#                     st.success("Textbook generated successfully!")
-#                     st.divider()
-#                     st.subheader("Generated Textbook Content", anchor=False)
-#                     st.markdown(textbook_content)
-#                 else:
-#                     st.error(f"Backend returned an error: {response.status_code} - {response.text}")
-#             except requests.exceptions.ConnectionError:
-#                 st.error("Failed to connect to the backend. Ensure the backend is running and accessible.")
-#             except Exception as e:
-#                 st.error(f"An unexpected error occurred: {str(e)}")
+st.caption("Textbook Generator Pro v2.0 | Word count guaranteed ")
